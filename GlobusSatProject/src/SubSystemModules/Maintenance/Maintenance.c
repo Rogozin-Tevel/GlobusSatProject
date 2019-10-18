@@ -32,41 +32,61 @@ Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)
 {
 	int an=0;
 	time_unix ft;
+
 	an = FRAM_read((time_unix *)&ft,fram_time_addr,sizeof(time_unix));
+
 	if(an==0)
 	{
 		return CheckExecutionTime(ft,period);
 	}
 	else
 	{
-		printf("error");//FRAM failed to finish the progress
+		printf("Error");//FRAM failed to finish the progress
 		return FALSE;
 	}
 }
 
 void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
-{//todo finish this function or fix it
+{//TODO finish this function or fix it, *DIANA REQUIRED*
 	time_unix ft;
 	int an=0,ab=0;
-	an =FRAM_read((time_unix *)&ft,time_addr,sizeof(time_unix));//to change this by getting the curent time.
+
+	an = FRAM_read((time_unix *)&ft, time_addr, time_size);//to change this by getting the curent time.
 	if(an==0)
 	{
-		ab =FRAM_write(ft,time_addr,time_size);
+		ab = FRAM_write(ft,time_addr,time_size);
 	}
 }
 
 Boolean IsFS_Corrupted()
 {
-	return FALSE;
+	unsigned int address = 2000;  // Random number to test reading
+	unsigned int test;  // Some place to put the data
+	int returned;  // Return indicator to check if data us corrupted
+
+	returned = FRAM_read(test, address, sizeof(test)); // Reading from a random place in the memory
+
+	if (returned != 0)  // In case there was a problem, Returned will not be zero
+	{
+		return TRUE;  // The data was corrupted
+	}
+
+	return FALSE;  // The data is not corrupted
 }
 
 int WakeupFromResetCMD()
 {
+	int currentUnixTime;  // Current time received from function Time_getUnixEpoch
+	unsigned int *epochTime;  // A pointer to the location where the unix time should be stored, *DIANA REQUIRED*
+
+	currentUnixTime = Time_getUnixEpoch(epochTime);  // Get current unix time
+
 	return 0;
 }
 
 void ResetGroundCommWDT()
 {
+	WDT_forceKick(); // Force "kicking" the watchdog timer
 }
 
 // check if last communication with the ground station has passed WDT kick time
@@ -81,7 +101,6 @@ Boolean IsGroundCommunicationWDTKick()
 //TODO: add to command dictionary
 int SetGsWdtKickTime(time_unix new_gs_wdt_kick_time)
 {
-
 	//by diana
 	if (new_gs_wdt_kick_time< 86400*2 || new_gs_wdt_kick_time>1*86400)
 		return -3;
@@ -102,5 +121,5 @@ time_unix GetGsWdtKickTime()
 }
 
 void Maintenance()
-{
+{//TODO, *DIANA HELP WE HAVE NO IDEA WHAT TO DO HERE*
 }
