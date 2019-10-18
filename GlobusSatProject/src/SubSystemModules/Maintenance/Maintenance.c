@@ -18,16 +18,41 @@
 
 Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
-	return FALSE;
+	if (prev_time!= period)
+	{
+		return TRUE;
+	}
+	else
+	{
+		return FALSE;
+	}
 }
 
 Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)
 {
-	return FALSE;
+	int an=0;
+	time_unix ft;
+	an = FRAM_read((time_unix *)&ft,fram_time_addr,sizeof(time_unix));
+	if(an==0)
+	{
+		return CheckExecutionTime(ft,period);
+	}
+	else
+	{
+		printf("error");//FRAM failed to finish the progress
+		return FALSE;
+	}
 }
 
 void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
-{
+{//todo finish this function or fix it
+	time_unix ft;
+	int an=0,ab=0;
+	an =FRAM_read((time_unix *)&ft,time_addr,sizeof(time_unix));//to change this by getting the curent time.
+	if(an==0)
+	{
+		ab =FRAM_write(ft,time_addr,time_size);
+	}
 }
 
 Boolean IsFS_Corrupted()
