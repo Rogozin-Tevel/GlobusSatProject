@@ -16,6 +16,8 @@
 #include "TLM_management.h"
 #include "Maintenance.h"
 
+#include "FRAM_FlightParameters.h"
+
 Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
 	if (prev_time!= period)
@@ -88,6 +90,8 @@ int WakeupFromResetCMD()
 	time_unix epochTime;  // Current time received from function Time_getUnixEpoch
 	int unixFlag = 0;
 
+	*(RESET_CMD_FLAG_ADDR) = 0; // Lowering the reset flag
+
 	unixFlag = Time_getUnixEpoch(&epochTime);  // Try to get the current unix time
 
 	if (unixFlag == 1)
@@ -95,9 +99,9 @@ int WakeupFromResetCMD()
 		return E_NOT_INITIALIZED;
 	}
 
-	// Need to lower reset flag, Don't know how
+	// TODO Find out how to send an ack packet with the unix time
 
-	return unixFlag;
+	return 0;
 }
 
 void ResetGroundCommWDT()
