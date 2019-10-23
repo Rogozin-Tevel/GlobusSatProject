@@ -77,11 +77,14 @@ Boolean IsFS_Corrupted()
 int WakeupFromResetCMD()
 {
 	int currentUnixTime;  // Current time received from function Time_getUnixEpoch
-	unsigned int *epochTime;  // A pointer to the location where the unix time should be stored, *DIANA REQUIRED*
+	int unixFlag = 0;
+	unsigned int epochTime;  // A pointer to the location where the unix time should be stored, *DIANA REQUIRED*
 
-	currentUnixTime = Time_getUnixEpoch(epochTime);  // Get current unix time
+	unixFlag = Time_getUnixEpoch(&epochTime);  // Try to get the current unix time
 
-	return 0;
+	// Need to lower reset flag, Don't know how
+
+	return unixFlag;
 }
 
 void ResetGroundCommWDT()
