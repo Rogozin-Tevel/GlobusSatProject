@@ -51,10 +51,19 @@ void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
 	time_unix ft;
 	int an=0,ab=0;
 
-	an = FRAM_read((time_unix *)&ft, time_addr, time_size);//to change this by getting the curent time.
+	an = Time_getUnixEpoch(&ft);
 	if(an==0)
 	{
-		ab = FRAM_write(ft,time_addr,time_size);
+	    ab = FRAM_write(ft,time_addr,time_size);
+	    if(ab!= 0)
+	    {
+	    	printf("ERROR");//error with writing time into fram.
+	    }
+	}
+	else
+	{
+		printf("ERROR");//error with reading time
+
 	}
 }
 
@@ -76,11 +85,15 @@ Boolean IsFS_Corrupted()
 
 int WakeupFromResetCMD()
 {
-	int currentUnixTime;  // Current time received from function Time_getUnixEpoch
+	time_unix epochTime;  // Current time received from function Time_getUnixEpoch
 	int unixFlag = 0;
-	unsigned int epochTime;  // A pointer to the location where the unix time should be stored, *DIANA REQUIRED*
 
 	unixFlag = Time_getUnixEpoch(&epochTime);  // Try to get the current unix time
+
+	if (unixFlag == 1)
+	{
+		return E_NOT_INITIALIZED;
+	}
 
 	// Need to lower reset flag, Don't know how
 
