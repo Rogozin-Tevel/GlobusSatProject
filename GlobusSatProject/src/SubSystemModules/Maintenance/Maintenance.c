@@ -18,7 +18,7 @@
 
 #include "FRAM_FlightParameters.h"
 
-Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
+Boolean CheckExecutionTime(time_unix prev_time, time_unix period)  // Check needed...
 {
 	if (prev_time!= period)
 	{
@@ -30,7 +30,7 @@ Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 	}
 }
 
-Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)
+Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)  // Check needed...
 {
 	int an=0;
 	time_unix ft;
@@ -48,8 +48,8 @@ Boolean CheckExecTimeFromFRAM(unsigned int fram_time_addr, time_unix period)
 	}
 }
 
-void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
-{//TODO finish this function or fix it, *DIANA REQUIRED*
+void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)  // Check needed...
+{
 	time_unix ft;
 	int an=0,ab=0;
 
@@ -69,7 +69,7 @@ void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
 	}
 }
 
-Boolean IsFS_Corrupted()
+Boolean IsFS_Corrupted()  // Check needed...
 {
 	unsigned int address = 2000;  // Random number to test reading
 	unsigned int test;  // Some place to put the data
@@ -85,26 +85,26 @@ Boolean IsFS_Corrupted()
 	return FALSE;  // The data is not corrupted
 }
 
-int WakeupFromResetCMD()
+int WakeupFromResetCMD() // Done by Blank
 {
-	time_unix epochTime;  // Current time received from function Time_getUnixEpoch
+	time_unix *epochTime;  // Current time received from function Time_getUnixEpoch
+	char* timeInChar;
 	int unixFlag = 0;
 
 	*(RESET_CMD_FLAG_ADDR) = 0; // Lowering the reset flag
 
-	unixFlag = Time_getUnixEpoch(&epochTime);  // Try to get the current unix time
+	unixFlag = Time_getUnixEpoch(epochTime);  // Try to get the current unix time
 
 	if (unixFlag == 1)
 	{
 		return E_NOT_INITIALIZED;
 	}
+	timeInChar = (char*)((void*)epochTime);  // Casting the unix time into a char array
 
-	// TODO Find out how to send an ack packet with the unix time
-
-	return 0;
+	return SendAckPacket(ACK_RESET_WAKEUP, NULL, timeInChar, sizeof(timeInChar) / sizeof(char));  // Sending ACK packet with time and returning error
 }
 
-void ResetGroundCommWDT()
+void ResetGroundCommWDT()  // Done by Blank
 {
 	WDT_forceKick(); // Force "kicking" the watchdog timer
 }
@@ -142,4 +142,5 @@ time_unix GetGsWdtKickTime()
 
 void Maintenance()
 {//TODO, *DIANA HELP WE HAVE NO IDEA WHAT TO DO HERE*
+
 }
