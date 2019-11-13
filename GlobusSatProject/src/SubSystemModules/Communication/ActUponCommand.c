@@ -8,7 +8,13 @@
 
 int ActUponCommand(sat_packet_t *cmd)
 {
-	return 0;
+	switch ((spl_command_type)cmd->cmd_type)
+	{
+	case trxvu_cmd_type:
+		err = trxvu_command_router(cmd);
+		break;
+	}
+	return err;
 }
 
 
