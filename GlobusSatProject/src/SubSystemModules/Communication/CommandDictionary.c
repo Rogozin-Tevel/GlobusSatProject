@@ -13,26 +13,40 @@
 #include "CommandDictionary.h"
 
 int trxvu_command_router(sat_packet_t *cmd)
-{
+{//need to know witch subtype should call witch command
+	char subt=cmd->cmd_subtype;
+	switch (subt)
+	{
+	case 0x11:
+		//dosomthing
+		break;
+
+	case 0x88:
+		//dosomthing
+		break;
+
+	default:
+		//else do somthing else
+	}
 	return 0;
 }
 
 int eps_command_router(sat_packet_t *cmd)
-{
+{//need to know witch subtype should call witch command
 	return 0;
 }
 
 int telemetry_command_router(sat_packet_t *cmd)
-{
+{//need to know witch subtype should call witch command
 	return 0;
 }
 
 int managment_command_router(sat_packet_t *cmd)
-{
+{//need to know witch subtype should call witch command
 	return 0;
 }
 
 int filesystem_command_router(sat_packet_t *cmd)
-{
+{//need to know witch subtype should call witch command
 	return 0;
 }
