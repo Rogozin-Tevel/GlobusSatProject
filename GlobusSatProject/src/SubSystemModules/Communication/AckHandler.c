@@ -30,11 +30,11 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 {
 	if (err == 0)
 	{
-		SendAckPacket(succ_subt, cmd, cmd->data, cmd->length); //must be checked befor used!!!!
+		SendAckPacket(succ_subt, cmd, cmd->data, cmd->length); // Must be checked before used!!!!
 	}
 	else
 	{
-		SendAckPacket(fail_subt, cmd, cmd->data, cmd->length); //must be checked befor used!!!!
+		SendAckPacket(fail_subt, cmd, cmd->data, cmd->length); // Must be checked before used!!!!
 	}
 }
 
