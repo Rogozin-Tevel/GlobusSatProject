@@ -9,7 +9,8 @@
 int ActUponCommand(sat_packet_t *cmd)  // Made By Blank
 {
 	int err = 0;
-	switch ((spl_command_type) cmd->cmd_type)
+
+	switch (cmd->cmd_type)
 	{
 	case trxvu_cmd_type:
 		err = trxvu_command_router(cmd);

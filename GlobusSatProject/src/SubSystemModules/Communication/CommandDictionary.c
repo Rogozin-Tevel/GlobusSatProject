@@ -52,7 +52,7 @@ int trxvu_command_router(sat_packet_t* cmd)
 		break;
 
 				return 0;
-		}
+	}
 	
 
 int eps_command_router(sat_packet_t *cmd)
@@ -65,23 +65,37 @@ int telemetry_command_router(sat_packet_t *cmd)
 	return 0;
 }
 
-int managment_command_router(sat_packet_t *cmd)
+int managment_command_router(sat_packet_t *cmd)  // Done by Blank
 {
-	//TODO: finish 'managment_command_router'
 	int err = 0;
+
 	switch ((management_subtypes_t)cmd->cmd_subtype)
 	{
-
 	case SOFT_RESET_SUBTYPE:
-		CMD_ResetComponent(reset_software);
+		err = CMD_ResetComponent(reset_software);
 		break;
 
 	case HARD_RESET_SUBTYPE:
-		CMD_ResetComponent(reset_hardware);
+		err = CMD_ResetComponent(reset_hardware);
 		break;
 
+	case TRXVU_SOFT_RESET_SUBTYPE:
+		err = CMD_ResetComponent(reset_trxvu_soft);
+		break;
 
+	case TRXVU_HARD_RESET_SUBTYPE:
+		err = CMD_ResetComponent(reset_trxvu_hard);
+		break;
+
+	case EPS_RESET_SUBTYPE:
+		err = CMD_ResetComponent(reset_eps);
+		break;
+
+	case FS_RESET_SUBTYPE:
+		err = CMD_ResetComponent(reset_filesystem);
+		break;
 	}
+
 	return err;
 }
 
