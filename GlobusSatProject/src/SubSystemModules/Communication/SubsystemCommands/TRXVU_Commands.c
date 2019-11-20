@@ -16,23 +16,28 @@ int CMD_StartDump(sat_packet_t* cmd)
 
 int CMD_SendDumpAbortRequest(sat_packet_t *cmd)
 {
-	return 0;
+	SendDumpAbortRequest();
+	return 0; // Check this if you can
 }
 
 int CMD_ForceDumpAbort(sat_packet_t *cmd)
 {
-	return 0;
+	AbortDump();
+	return CheckDumpAbort();
 }
 
 
 int CMD_MuteTRXVU(sat_packet_t *cmd)
 {
-	return 0;
+	int err = 0;
+	err = muteTRXVU((time_unix*)((void*)cmd->data));
+	return err;
 }
 
 int CMD_UnMuteTRXVU(sat_packet_t *cmd)
 {
-	return 0;
+	UnMuteTRXVU();
+	return GetMuteFlag();
 }
 
 int CMD_GetBaudRate(sat_packet_t *cmd)
@@ -53,7 +58,9 @@ int CMD_GetBeaconInterval(sat_packet_t *cmd)
 
 int CMD_SetBeaconInterval(sat_packet_t *cmd)
 {
-	return 0;
+	int err = 0;
+	UpdateBeaconInterval((time_unix*)((void*) cmd->data));
+	return err;
 }
 
 int CMD_SetBaudRate(sat_packet_t *cmd)
