@@ -22,26 +22,39 @@ int trxvu_command_router(sat_packet_t* cmd)
 	case DUMP_SUBTYPE:
 		err = CMD_StartDump(cmd);
 		break;
-		====== =
-		{//need to know witch subtype should call witch command
-			char subt = cmd->cmd_subtype;
-			switch (subt)
-			{
-			case 0x11:
-				//dosomthing
-				break;
 
-			case 0x88:
-				//dosomthing
-				break;
+	case ABORT_DUMP_SUBTYPE:
+		err = CMD_SendDumpAbortRequest(cmd);
+		break;
 
-			default:
-				//else do somthing else
-			}
+	case FORCE_ABORT_DUMP_SUBTYPE:
+		err = CMD_ForceDumpAbort(cmd);
+		break;
+
+	case MUTE_TRXVU:
+		err = CMD_MuteTRXVU(cmd);
+		break;
+
+	case UNMUTE_TRXVU:
+		err = CMD_UnMuteTRXVU(cmd);
+		break;
+
+	case GET_BAUD_RATE:
+		err = CMD_GetBaudRate(cmd);
+		break;
+
+	case GET_BEACON_INTERVAL:
+		err = CMD_GetBeaconInterval(cmd);
+		break;
+
+	case SET_BEACON_INTERVAL:
+		err = CMD_SetBeaconInterval(cmd);
+		break;
+
 				return 0;
 		}
-	}
-}
+	
+
 int eps_command_router(sat_packet_t *cmd)
 {//need to know witch subtype should call witch command
 	return 0;
@@ -53,8 +66,23 @@ int telemetry_command_router(sat_packet_t *cmd)
 }
 
 int managment_command_router(sat_packet_t *cmd)
-{//need to know witch subtype should call witch command
-	return 0;
+{
+	//TODO: finish 'managment_command_router'
+	int err = 0;
+	switch ((management_subtypes_t)cmd->cmd_subtype)
+	{
+
+	case SOFT_RESET_SUBTYPE:
+		CMD_ResetComponent(reset_software);
+		break;
+
+	case HARD_RESET_SUBTYPE:
+		CMD_ResetComponent(reset_hardware);
+		break;
+
+
+	}
+	return err;
 }
 
 int filesystem_command_router(sat_packet_t *cmd)

@@ -13,14 +13,14 @@ int ActUponCommand(sat_packet_t *cmd)  // Made By Blank
 
 	int err = 0;
 
-	switch(cmd->cmd_type)
 
+	switch ((spl_command_type) cmd->cmd_type)
 	{
 	case trxvu_cmd_type:
 		err = trxvu_command_router(cmd);
 		break;
 
-	}
+	
 
 	case eps_cmd_type:
 		err = eps_command_router(cmd);
@@ -34,8 +34,8 @@ int ActUponCommand(sat_packet_t *cmd)  // Made By Blank
 	case managment_cmd_type:
 		err = managment_command_router(cmd);
 		break;
-	default:
-		// Error! Unknown cmd type. No appropriate error for invalid cmd type
+	case ack_type: 								//this command is a ping function
+		SendAckPacket(ACK_PING, cmd,NULL,0);
 		break;
 	}
 
