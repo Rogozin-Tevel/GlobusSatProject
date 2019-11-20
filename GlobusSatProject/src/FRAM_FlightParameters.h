@@ -47,8 +47,6 @@
 #define WOD_SAVE_TLM_PERIOD_ADDR		0x33		//<! address where the save tlm period will be
 #define LAST_WOD_TLM_SAVE_TIME_ADDR		0x20		//<! time of last EPS TLM save inot files
 
-
-
 #define DEFAULT_NO_COMM_WDT_KICK_TIME  (5*24*60*60)	//<! number of seconds in 15 days
 #define NO_COMM_WDT_KICK_TIME_ADDR  	0x24		///< number of seconds of no communications before GS WDT kick
 #define NO_COMM_WDT_KICK_TIME_SIZE		4
@@ -70,7 +68,7 @@
 
 #define DEFAULT_BEACON_INTERVAL_TIME 	20			//<! how many seconds between two beacons [sec]
 #define MAX_BEACON_INTERVAL				60			// beacon every 1 minute
-#define MIN_BEACON_INTERVAL				10			// beacon every 10 secinds
+#define MIN_BEACON_INTERVAL				10			// beacon every 10 seconds
 #define BEACON_INTERVAL_TIME_ADDR 		0x4590		//<! address of value of the delay between 2 beacons
 #define BEACON_INTERVAL_TIME_SIZE 		4			//<! size of parameter in bytes
 

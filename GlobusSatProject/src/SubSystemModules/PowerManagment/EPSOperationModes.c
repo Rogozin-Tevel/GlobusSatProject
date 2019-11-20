@@ -3,11 +3,12 @@
 #include "GlobalStandards.h"
 
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
-#endif
+#include <satellite-subsystems/IsisEPS.h>
+#endif // ISISEPS
+
 #ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
+#include <satellite-subsystems/GomEPS.h>
+#endif // GOMEPS
 
 
 //TODO: update functions to only the relevant channels

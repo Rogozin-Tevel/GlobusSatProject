@@ -6,218 +6,225 @@
 
 #include "EPS.h"
 #ifdef ISISEPS
-	#include <satellite-subsystems/IsisEPS.h>
-#endif
+#include <satellite-subsystems/IsisEPS.h>
+#endif // ISISEPS
+
 #ifdef GOMEPS
-	#include <satellite-subsystems/GomEPS.h>
-#endif
+#include <satellite-subsystems/GomEPS.h>
+#endif // GOMEPS
+
+// TODO: What does this documentation mean?
+//		 And why doesn't it match the code?
 
 // y[i] = a * x[i] +(1-a) * y[i-1]
 voltage_t prev_avg = 0;		// y[i-1]
-float alpha = 0;			//<! smoothing constant
+float     alpha    = 0;		//<! smoothing constant
 
 voltage_t eps_threshold_voltages[NUMBER_OF_THRESHOLD_VOLTAGES];	// saves the current EPS logic threshold voltages
-//done
+
 int GetBatteryVoltage(voltage_t *vbatt)
-{
-	int err;
-
+{ // Done
 	ieps_enghk_data_cdb_t p_raenghk_data_cdb;
-
-	unsigned char index= EPS_I2C_BUS_INDEX ;
-
-	ieps_board_t board= ieps_board_cdb1;
 
 	ieps_statcmd_t p_rsp_code;
 
-	//get house keeping  data
+	unsigned char index = EPS_I2C_BUS_INDEX;
 
-	err= IsisEPS_getRAEngHKDataCDB(index, board, &p_raenghk_data_cdb, &p_rsp_code);
+	ieps_board_t board = ieps_board_cdb1;
 
-	*vbatt=p_raenghk_data_cdb.fields.bat_voltage; //saving the batt voltage
+	// Get house keeping data
+	int err = IsisEPS_getRAEngHKDataCDB(index, board, &p_raenghk_data_cdb, &p_rsp_code);
 
-	if(err!=E_NO_SS_ERR)
-	    return 0;
-	else
-		return -1;
-}
-//done
-int EPS_Init()
-{
-	//a*******************************************************************************************************
-    int err;
-    unsigned char eps_addr= EPS_I2C_ADDR;
+	*vbatt = p_raenghk_data_cdb.fields.bat_voltage; // Save the batt voltage
 
-	err= IsisEPS_initialize(&eps_addr, 1);
-	//b*******************************************************************************************************
-	if (err!=E_NO_SS_ERR)
-		return -1;
-	//c*******************************************************************************************************
-	err= IsisSolarPanelv2_initialize( slave0_spi);
-	//d*******************************************************************************************************
-	if (err==ISIS_SOLAR_PANEL_STATE_NOINIT)
-			return -2;
-	//loss batt
-	IsisSolarPanelv2_sleep();
-	//e*******************************************************************************************************
-	err=GetThresholdVoltages(eps_threshold_voltages);
-	if (0!=err)
+	if (err != E_NO_SS_ERR)
 	{
-		voltage_t temp[]=DEFAULT_EPS_THRESHOLD_VOLTAGES ;
-		memcpy(eps_threshold_voltages,temp,sizeof(temp));
+	    return 0;
+	}
+	return -1;
+}
+
+int EPS_Init()
+{ // Done
+    unsigned char eps_addr = EPS_I2C_ADDR;
+
+	int err_code = IsisEPS_initialize(&eps_addr, 1);
+
+	if (err_code != E_NO_SS_ERR)
+	{
+		return -1;
+	}
+
+	err_code = IsisSolarPanelv2_initialize(slave0_spi);
+
+	if (err_code == ISIS_SOLAR_PANEL_STATE_NOINIT)
+	{
+		return -2;
+	}
+
+	IsisSolarPanelv2_sleep(); // Reduce the power consumption
+
+	err_code = GetThresholdVoltages(eps_threshold_voltages);
+	if (err_code != 0)
+	{
+		voltage_t temp[] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
+		memcpy(eps_threshold_voltages, temp, sizeof(temp));
 		return -3;
 	}
-	err=GetAlpha(&alpha);
-	if (0!=err)
+
+	err_code = GetAlpha(&alpha);
+	if (err_code != 0)
 	{
-		alpha=DEFAULT_ALPHA_VALUE;
+		alpha = DEFAULT_ALPHA_VALUE;
 		return -4;
 	}
-    GetBatteryVoltage(&prev_avg);
+
+	GetBatteryVoltage(&prev_avg);
     EPS_Conditioning();
+
     return 0;
 }
 
 int EPS_Conditioning()
-{
+{ // Done?
 	//******done by diana*****
-	voltage_t vbatt;
-	voltage_t curr_avg;
+	// Fixed by Maor & Yanir
 
-	//voltage_t prev_avg = 0;
+	voltage_t vbatt; 	// Battery voltage
+	voltage_t curr_avg;	// TODO: What is this? current average? average of what?
 
-	int an=0;
+	int err_code = GetBatteryVoltage(&vbatt);
 
-	an = GetBatteryVoltage(&vbatt);
-
-	if (an ==-1)
-	 {
-		 printf("error to get Battery Voltages\n");
-	 }
-
-	an =FRAM_read((unsigned char *)&alpha,EPS_ALPHA_FILTER_VALUE_ADDR,sizeof(EPS_ALPHA_FILTER_VALUE_SIZE)); //or using:  GetAlpha(&alpha)
-
-	if (an!=0)
-		{
-		 printf("cannot read alpha\n");
-		}
-
-	 an= GetThresholdVoltages(eps_threshold_voltages);  // adding the levels for eps
-
-	curr_avg= alpha*prev_avg + (1-alpha)*vbatt; // funcation
-
-	if (curr_avg > prev_avg)
+	if (err_code != 0)
 	{
-		if (prev_avg > eps_threshold_voltages[INDEX_UP_FULL])
-		{
-			an= EnterFullMode();
-			if (an ==-1)
-				 {
-					 printf("error to go Full Mode\n");
-				 }
-			else
-			{
-				printf("Entering to Full Mode\n");
-			}
-
-		}
-		else
-			if (prev_avg > eps_threshold_voltages[INDEX_UP_CRUISE])
-			{
-			  an=  EnterCruiseMode();
-			  if (an ==-1)
-			  	{
-			  	  printf("error to go Cruise Mode\n");
-			  	}
-			  else
-			  {
-				  printf("Entering to Cruise Mode\n");
-			  }
-
-			}
-			else
-				if (prev_avg > eps_threshold_voltages[INDEX_UP_SAFE])
-				{
-				  an=  EnterSafeMode();
-				  if (an ==-1)
-				  	{
-				  	  printf("error to go Safe Mode\n");
-				  	}
-				  else
-				   {
-				    printf("Entering to Safe Mode\n");
-				   }
-				}
-	  }
-	else
-	{
-		/*if (prev_avg < eps_threshold_voltages[INDEX_DOWN_SAFE])
-		 {
-			 an= EnterCriticalMode();
-			 if (an ==-1)
-				 {
-					printf("error to go Critical Mode\n");
-				 }
-			else
-				{
-					printf("Entering to Critical Mode\n");
-				}
-
-				}
-				else*/
-					if (prev_avg < eps_threshold_voltages[INDEX_DOWN_SAFE])
-					{
-					  an= EnterSafeMode();
-					  if (an ==-1)
-					  	{
-					  	  printf("error to go Safe Mode\n");
-					  	}
-					  else
-					  {
-						  printf("Entering to Safe Mode\n");
-					  }
-
-					}
-					else
-						if (prev_avg < eps_threshold_voltages[INDEX_DOWN_CRUISE])
-						{
-						  an=  EnterCruiseMode();
-						  if (an ==-1)
-						  	{
-						  	  printf("error to go Cruise Mode");
-						  	}
-						  else
-						   {
-						    printf("Entering to Cruise Mode\n");
-						   }
-						}
+		printf("Error when getting battery voltages!\n");
+		return -1;
 	}
 
+	err_code = GetAlpha(&alpha);
 
-        prev_avg=curr_avg;
+	if (err_code != 0)
+	{
+		printf("Error on EPS_Conditioning: Can't read alpha!\n");
+		return -1;
+	}
 
+	err_code = GetThresholdVoltages(eps_threshold_voltages); // Add the levels to EPS
+	if (err_code != 0)
+	{
+		printf("Error on EPS_Conditioning: Can't load threshold voltages!\n");
+		return -1;
+	}
 
-	return an;
+	// TODO: This calculation doesn't match the documentation!
+	curr_avg = alpha * prev_avg + (1 - alpha) * vbatt; // TODO: ???
+
+	const Boolean is_charging = curr_avg >= prev_avg;
+
+	const EpsState_t prev_state = GetSystemState();
+
+	if (is_charging)
+	{
+		if (curr_avg >= eps_threshold_voltages[INDEX_UP_FULL])
+		{
+			if (prev_state != FullMode)
+			{
+				err_code = EnterFullMode();
+				if (err_code != 0)
+				{
+					printf("Error on EPS_Conditioning: Can't enter full mode!\n");
+					return -1;
+				}
+			}
+		}
+		else if (curr_avg >= eps_threshold_voltages[INDEX_UP_CRUISE])
+		{
+			if (prev_state != CruiseMode)
+			{
+				err_code = EnterCruiseMode();
+				if (err_code != 0)
+				{
+					printf("Error on EPS_Conditioning: Can't enter cruise mode!\n");
+					return -1;
+				}
+			}
+		}
+		else if (curr_avg >= eps_threshold_voltages[INDEX_UP_SAFE])
+		{
+			if (prev_state != SafeMode)
+			{
+				err_code = EnterSafeMode();
+				if (err_code != 0)
+				{
+					printf("Error on EPS_Conditioning: Can't enter safe mode!\n");
+					return -1;
+				}
+			}
+		}
+	}
+	else // The battery isn't charging ATM!
+	{
+		if (curr_avg <= eps_threshold_voltages[INDEX_DOWN_SAFE])
+		{
+			if (prev_state != CriticalMode)
+			{
+				err_code = EnterCriticalMode();
+				if (err_code != 0)
+				{
+					printf("Error on EPS_Conditioning: Can't enter critical mode!\n");
+					return -1;
+				}
+			}
+		}
+		else if (curr_avg <= eps_threshold_voltages[INDEX_DOWN_CRUISE])
+		{
+			if (prev_state != SafeMode)
+			{
+				err_code = EnterSafeMode();
+				if (err_code != 0)
+				{
+					printf("Error on EPS_Conditioning: Can't enter safe mode!\n");
+					return -1;
+				}
+			}
+		}
+		else if (curr_avg <= eps_threshold_voltages[INDEX_DOWN_FULL])
+		{
+			if (prev_state != CruiseMode)
+			{
+				err_code = EnterCruiseMode();
+				if (err_code != 0)
+				{
+					printf("Error on EPS_Conditioning: Can't enter cruise mode!\n");
+					return -1;
+				}
+			}
+		}
+	}
+
+	prev_avg = curr_avg;
+
+	return 0;
 }
 
 int UpdateAlpha(float new_alpha)
 {
 	//******done by diana*****
-    if (new_alpha <0)
+	// Fixed by Maor & Yanir
+
+    if (new_alpha < 0 || new_alpha > 1)
     {
-    	printf("error: the new paramater is nor right\n");
+    	printf("Error on UpdateAlpha: Alpha is out of range!\n");
     	return -2;
     }
-	if(FRAM_write((unsigned char*)&new_alpha,EPS_ALPHA_FILTER_VALUE_ADDR,EPS_ALPHA_FILTER_VALUE_SIZE)!=0) //כשלון הכתיבה לפראם
-		 	{
-		     printf("error: cannot to write alpha to fram\n");
-		     return -1;
-			}
-	else
-	{
-		printf("succed:to write alpha to fram\n");
-		return 0;
-	}
+
+    if (FRAM_write((unsigned char *)&new_alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE) != 0)
+    {
+    	printf("Error on UpdateAlpha: Can't write alpha to FRAM!\n");
+    	return -1;
+    }
+
+    return 0;
 }
 
 int UpdateThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES])
@@ -234,46 +241,26 @@ int GetThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES])
 
 int GetAlpha(float *alpha)
 {
-	int an =0;
+	int an = FRAM_read((unsigned char *)&alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE);
 
-	an = FRAM_read((unsigned char *)&alpha,EPS_ALPHA_FILTER_VALUE_ADDR,sizeof(EPS_ALPHA_FILTER_VALUE_SIZE));
-
-	if (an==0 )
+	if (an == -1)
 	{
-		printf("success to get alpha");
-
+		printf("Error on GetAlpha: Can't obtain lock for FRAM access!\n");
+	  	return -2;
 	}
 
-	else
-		if (an ==-1)
-		{
-          printf("obtaining lock for FRAM access fails/ NULL input array");
-          an=-2;
-		}
+	if (an == -2)
+	{
+		printf("Error on GetAlpha: NULL input array!\n");
+		return -1;
+	}
 
-		else
-			if (an==-2)
-			{
-				an=-1;
-	            printf("NULL input array");
-			}
-
-	return an;
+	return 0;
 }
 
 int RestoreDefaultAlpha()
 {
-	alpha=DEFAULT_ALPHA_VALUE;
-	if(FRAM_write((unsigned char*)&alpha,EPS_ALPHA_FILTER_VALUE_ADDR,EPS_ALPHA_FILTER_VALUE_SIZE)!=0) //כשלון הכתיבה לפראם
-			 	{
-			     printf("error: cannot to write alpha to fram\n");
-			     return -1;
-				}
-	else
-	{
-      printf("success to Restore Default Alpha \n");
-	  return 0;
-	}
+	return UpdateAlpha(DEFAULT_ALPHA_VALUE);
 }
 
 int RestoreDefaultThresholdVoltages()
