@@ -8,20 +8,12 @@
 
 int ActUponCommand(sat_packet_t *cmd)  // Made By Blank
 {
-
-	switch ((spl_command_type)cmd->cmd_type)
-
 	int err = 0;
-
-
 	switch ((spl_command_type) cmd->cmd_type)
 	{
 	case trxvu_cmd_type:
 		err = trxvu_command_router(cmd);
 		break;
-
-	
-
 	case eps_cmd_type:
 		err = eps_command_router(cmd);
 		break;
