@@ -129,6 +129,12 @@ time_unix GetGsWdtKickTime() // Fixed by Maor & Yanir
 }
 
 void Maintenance()
-{//TODO, *DIANA HELP WE HAVE NO IDEA WHAT TO DO HERE*
+{
+	SaveSatTimeInFRAM(/*unsigned int time_addr, unsigned int time_size*/);
 
+	WakeupFromResetCMD();  // Returns int
+
+	IsFS_Corrupted();  // Returns boolean
+
+	IsGroundCommunicationWDTKick();  // Returns boolean
 }
