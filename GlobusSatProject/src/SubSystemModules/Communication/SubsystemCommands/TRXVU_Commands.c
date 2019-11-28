@@ -31,7 +31,7 @@ int CMD_UnMuteTRXVU(sat_packet_t *cmd) {
 }
 
 int CMD_GetBaudRate(sat_packet_t *cmd) {
-	return GetTrxvuBitrate((ISIStrxvuBitrateStatus*) ((void*) cmd->data)); // Check parameter
+	return GetTrxvuBitrate((ISIStrxvuBitrateStatus*) ((void*) cmd->data)); // Check parameter, I'm not sure about it
 }
 
 int CMD_SetBeaconCycleTime(sat_packet_t *cmd) {
@@ -42,17 +42,17 @@ int CMD_GetBeaconInterval(sat_packet_t *cmd) {
 	return FRAM_read(cmd->data, BEACON_INTERVAL_TIME_ADDR, cmd->length);
 }
 
-int CMD_SetBeaconInterval(sat_packet_t *cmd) // Used function instead of writing into FRAM as advised
+int CMD_SetBeaconInterval(sat_packet_t *cmd)
 {
-	return UpdateBeaconInterval((time_unix*) ((void*) cmd->data));
+	return UpdateBeaconInterval((time_unix*) ((void*) cmd->data)); // Used function instead of writing into FRAM as advised
 }
 
 int CMD_SetBaudRate(sat_packet_t *cmd) {
-	return IsisTrxvu_tcSetAx25Bitrate(/*unsigned char index, ISIStrxvuBitrate bitrate*/);  // Where do i get the params from?
+	return IsisTrxvu_tcSetAx25Bitrate(/*unsigned char index, ISIStrxvuBitrate bitrate*/);  // Where do i get these params from?
 }
 
 int CMD_GetTxUptime(sat_packet_t *cmd) {
-	return IsisTrxvu_tcGetUptime(/*unsigned char index, unsigned int *uptime*/);  // Where do i get the params from?
+	return IsisTrxvu_tcGetUptime(/*unsigned char index, unsigned int *uptime*/);  // Where do i get these params from?
 }
 
 int CMD_GetRxUptime(sat_packet_t *cmd) {
