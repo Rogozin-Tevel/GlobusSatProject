@@ -50,10 +50,9 @@ int trxvu_command_router(sat_packet_t* cmd)
 	case SET_BEACON_INTERVAL:
 		err = CMD_SetBeaconInterval(cmd);
 		break;
-
-		return err;
 	}
-	
+	return err;
+}
 
 int eps_command_router(sat_packet_t *cmd)
 {//need to know which subtype should call which command

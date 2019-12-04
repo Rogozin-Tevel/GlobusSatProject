@@ -197,15 +197,15 @@ void BeaconLogic()
 int muteTRXVU(time_unix duration)
 {
 	if (duration > MAX_MUTE_TIME) {
-			return -2;
-		}
-		time_unix curr_tick_time = 0;
-		Time_getUnixEpoch(&curr_tick_time);
+		return -2;
+	}
+	time_unix curr_tick_time = 0;
+	Time_getUnixEpoch(&curr_tick_time);
 
-		g_mute_end_time = curr_tick_time + duration;
-		g_mute_flag = MUTE_ON;
+	g_mute_end_time = curr_tick_time + duration;
+	g_mute_flag = MUTE_ON;
 
-		return 0;
+	return 0;
 }
 
 void UnMuteTRXVU() {
