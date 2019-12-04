@@ -44,7 +44,8 @@ int CMD_GetBeaconInterval(sat_packet_t *cmd) {
 
 int CMD_SetBeaconInterval(sat_packet_t *cmd)
 {
-	return UpdateBeaconInterval((time_unix*) ((void*) cmd->data)); // Used function instead of writing into FRAM as advised
+	time_unix *pTime = (time_unix *)cmd->data;
+	return UpdateBeaconInterval(*pTime); // Used function instead of writing into FRAM as advised
 }
 
 int CMD_SetBaudRate(sat_packet_t *cmd) {
