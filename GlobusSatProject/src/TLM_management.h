@@ -8,7 +8,7 @@
 #ifndef TM_MANAGMENT_H_
 #define TM_MANAGMENT_H_
 
-#include <hal/Boolean.h>
+#include <hal/boolean.h>
 #include <GlobalStandards.h>
 
 #define MAX_F_FILE_NAME_SIZE 7
