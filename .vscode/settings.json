@@ -6,28 +6,29 @@
         "hal/hal/include",
         "hal/hcc/include",
         "satellite-subsystems/satellite-subsystems/include"
-    ],
-    "files.exclude": {
-        ".vscode": true,
+    ]
+    // ,
+    // "files.exclude": {
+    //     ".vscode": false,
 
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
+    //     "**/.git": true,
+    //     "**/.svn": true,
+    //     "**/.hg": true,
+    //     "**/CVS": true,
+    //     "**/.DS_Store": true,
 
-        "GlobusSatProject/GlobusSatProject": true,
-        "GlobusSatProject/Debug": true,
-        "**/.settings": true,
-        "**/*.cproject": true,
-        "**/*.project": true,
-        "**/*.launch": true,
-        "**/lib": true,
-        "**/linker-scripts": true,
-        "**/*.dir": true,
-        "**/demo": true,
-        "**/*.txt": true,
-        "**/docs": true,
-        "hal/**/src": true
-    }
+    //     "GlobusSatProject/GlobusSatProject": true,
+    //     "GlobusSatProject/Debug": true,
+    //     "**/.settings": true,
+    //     "**/*.cproject": true,
+    //     "**/*.project": true,
+    //     "**/*.launch": true,
+    //     "**/lib": true,
+    //     "**/linker-scripts": true,
+    //     "**/*.dir": true,
+    //     "**/demo": true,
+    //     "**/*.txt": true,
+    //     "**/docs": true,
+    //     "hal/**/src": true
+    // }
 }
