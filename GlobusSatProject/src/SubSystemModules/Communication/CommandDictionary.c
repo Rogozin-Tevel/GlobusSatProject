@@ -55,12 +55,12 @@ int trxvu_command_router(sat_packet_t* cmd)
 }
 
 int eps_command_router(sat_packet_t *cmd)
-{//need to know which subtype should call which command
+{
 	return 0;
 }
 
 int telemetry_command_router(sat_packet_t *cmd)
-{//need to know which subtype should call which command
+{
 	return 0;
 }
 
@@ -99,6 +99,6 @@ int managment_command_router(sat_packet_t *cmd)  // Done by Blank
 }
 
 int filesystem_command_router(sat_packet_t *cmd)
-{//need to know which subtype should call which command
+{
 	return 0;
 }
