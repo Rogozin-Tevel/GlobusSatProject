@@ -27,7 +27,7 @@ int ActUponCommand(sat_packet_t *cmd)  // Made By Blank
 	case managment_cmd_type:
 		err = managment_command_router(cmd);
 		break;
-	case ack_type: 								//this command is a ping function
+	case ack_type: 								// This command is a ping function
 		SendAckPacket(ACK_PING, cmd,NULL,0);
 		break;
 	}

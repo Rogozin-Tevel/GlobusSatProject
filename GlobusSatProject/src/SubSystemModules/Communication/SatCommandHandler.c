@@ -88,7 +88,7 @@ int AssmbleCommand(unsigned char *data, unsigned int data_length, char type,
 		char subtype, unsigned int id, sat_packet_t *cmd)
 {
 	if (NULL == cmd) {
-		return cmd_null_pointer_error;
+		return null_pointer_error;
 	}
 	cmd->ID = id;
 	cmd->cmd_type = type;
@@ -102,10 +102,10 @@ int AssmbleCommand(unsigned char *data, unsigned int data_length, char type,
 		void* err = memcpy(cmd->data, data, data_length);
 
 		if (NULL == err) {
-			return cmd_execution_error;
+			return execution_error;
 		}
 	}
-	return cmd_command_succsess;
+	return command_succsess;
 }
 
 // checks if a cmd time is valid for execution -> execution time has passed and command not expired
