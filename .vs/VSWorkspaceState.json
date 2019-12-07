@@ -1,16 +1,4 @@
 {
-  "ExpandedNodes": [
-    "",
-    "\\GlobusSatProject",
-    "\\GlobusSatProject\\src",
-    "\\GlobusSatProject\\src\\SubSystemModules",
-    "\\GlobusSatProject\\src\\SubSystemModules\\PowerManagment",
-    "\\GlobusSatProject\\src\\TestingDemos",
-    "\\hal",
-    "\\hal\\at91",
-    "\\hal\\at91\\include",
-    "\\hal\\at91\\include\\at91",
-    "\\hal\\at91\\include\\at91\\boards"
-  ],
+  "ExpandedNodes": [],
   "PreviewInSolutionExplorer": false
 }

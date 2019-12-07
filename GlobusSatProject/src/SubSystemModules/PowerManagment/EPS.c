@@ -1,4 +1,3 @@
-
 #include <satellite-subsystems/IsisSolarPanelv2.h>
 #include <hal/errors.h>
 
