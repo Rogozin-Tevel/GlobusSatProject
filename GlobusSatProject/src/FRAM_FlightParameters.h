@@ -10,7 +10,6 @@
 
 #include <hal/Storage/FRAM.h>
 
-
 // <Satellite Management>
 #define FIRST_ACTIVATION_FLAG_ADDR		0x42		//<! is this the first activation after launch flag
 #define FIRST_ACTIVATION_FLAG_SIZE		4			//<! length in bytes of FIRST_ACTIVATION_FLAG

@@ -229,14 +229,12 @@ int UpdateAlpha(float new_alpha)
 
 int UpdateThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES])
 {
-	//******done by diana*****
-	//eps_threshold_voltages
-	return 0;
+	return FRAM_write((unsigned char *)thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
 }
 
 int GetThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES])
 {
-	return 0;
+	return FRAM_read((unsigned char *)thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
 }
 
 int GetAlpha(float *alpha)
@@ -265,9 +263,8 @@ int RestoreDefaultAlpha()
 
 int RestoreDefaultThresholdVoltages()
 {
-	//to do memcpy
-	//we need to do pointerim
-	//memcpy(eps_threshold_voltages,DEFAULT_EPS_THRESHOLD_VOLTAGES,NUMBER_OF_THRESHOLD_VOLTAGES);
+	voltage_t temp[NUMBER_OF_THRESHOLD_VOLTAGES] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
+	FRAM_write((unsigned char *)temp, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
 	return 0;
 }
 

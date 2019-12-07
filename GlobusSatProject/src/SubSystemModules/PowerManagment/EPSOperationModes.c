@@ -18,21 +18,25 @@ Boolean g_low_volt_flag = FALSE; // set to true if in low voltage
 
 int EnterFullMode()
 {
+	state = FullMode;
 	return 0;
 }
 
 int EnterCruiseMode()
 {
+	state = CruiseMode;
 	return 0;
 }
 
 int EnterSafeMode()
 {
+	state = SafeMode;
 	return 0;
 }
 
 int EnterCriticalMode()
 {
+	state = CriticalMode;
 	return 0;
 }
 
@@ -53,10 +57,11 @@ channel_t GetSystemChannelState()
 
 Boolean EpsGetLowVoltageFlag()
 {
-	return FALSE;
+	return g_low_volt_flag;
 }
 
 void EpsSetLowVoltageFlag(Boolean low_volt_flag)
 {
+	g_low_volt_flag = low_volt_flag;
 }
 
