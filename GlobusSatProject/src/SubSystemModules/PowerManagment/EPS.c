@@ -23,18 +23,18 @@ voltage_t eps_threshold_voltages[NUMBER_OF_THRESHOLD_VOLTAGES];	// saves the cur
 
 int GetBatteryVoltage(voltage_t *vbatt)
 { // Done
-	ieps_enghk_data_cdb_t p_raenghk_data_cdb;
+	ieps_enghk_data_cdb_t raenghk_data_cdb;
 
-	ieps_statcmd_t p_rsp_code;
+	ieps_statcmd_t rsp_code;
 
 	unsigned char index = EPS_I2C_BUS_INDEX;
 
 	ieps_board_t board = ieps_board_cdb1;
 
 	// Get house keeping data
-	int err = IsisEPS_getRAEngHKDataCDB(index, board, &p_raenghk_data_cdb, &p_rsp_code);
+	int err = IsisEPS_getRAEngHKDataCDB(index, board, &raenghk_data_cdb, &rsp_code);
 
-	*vbatt = p_raenghk_data_cdb.fields.bat_voltage; // Save the batt voltage
+	*vbatt = raenghk_data_cdb.fields.bat_voltage; // Save the batt voltage
 
 	if (err != E_NO_SS_ERR)
 	{
@@ -64,7 +64,7 @@ int EPS_Init()
 	IsisSolarPanelv2_sleep(); // Reduce the power consumption
 
 	err_code = GetThresholdVoltages(eps_threshold_voltages);
-	if (err_code != 0)
+	if (err_code)
 	{
 		voltage_t temp[] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
 		memcpy(eps_threshold_voltages, temp, sizeof(temp));
@@ -72,7 +72,7 @@ int EPS_Init()
 	}
 
 	err_code = GetAlpha(&alpha);
-	if (err_code != 0)
+	if (err_code)
 	{
 		alpha = DEFAULT_ALPHA_VALUE;
 		return -4;
@@ -96,7 +96,7 @@ int EPS_Conditioning()
 
 	if (err_code != 0)
 	{
-		printf("Error when getting battery voltages!\n");
+		printf("Error on EPS_Conditioning: Error when getting battery voltages!\n");
 		return -1;
 	}
 
@@ -208,16 +208,13 @@ int EPS_Conditioning()
 
 int UpdateAlpha(float new_alpha)
 {
-	//******done by diana*****
-	// Fixed by Maor & Yanir
-
     if (new_alpha < 0 || new_alpha > 1)
     {
     	printf("Error on UpdateAlpha: Alpha is out of range!\n");
     	return -2;
     }
 
-    if (FRAM_write((unsigned char *)&new_alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE) != 0)
+    if (FRAM_write(&new_alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE))
     {
     	printf("Error on UpdateAlpha: Can't write alpha to FRAM!\n");
     	return -1;
@@ -228,25 +225,25 @@ int UpdateAlpha(float new_alpha)
 
 int UpdateThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES])
 {
-	return FRAM_write((unsigned char *)thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
+	return FRAM_write(thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
 }
 
 int GetThresholdVoltages(voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES])
 {
-	return FRAM_read((unsigned char *)thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
+	return FRAM_read(thresh_volts, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
 }
 
 int GetAlpha(float *alpha)
 {
-	int an = FRAM_read((unsigned char *)&alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE);
+	int err = FRAM_read(&alpha, EPS_ALPHA_FILTER_VALUE_ADDR, EPS_ALPHA_FILTER_VALUE_SIZE);
 
-	if (an == -1)
+	if (err == -1)
 	{
 		printf("Error on GetAlpha: Can't obtain lock for FRAM access!\n");
 	  	return -2;
 	}
 
-	if (an == -2)
+	if (err == -2)
 	{
 		printf("Error on GetAlpha: NULL input array!\n");
 		return -1;
@@ -263,7 +260,7 @@ int RestoreDefaultAlpha()
 int RestoreDefaultThresholdVoltages()
 {
 	voltage_t temp[NUMBER_OF_THRESHOLD_VOLTAGES] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
-	FRAM_write((unsigned char *)temp, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
-	return 0;
+	FRAM_write(temp, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
+	return 0; // TODO: Handle error codes...
 }
 
