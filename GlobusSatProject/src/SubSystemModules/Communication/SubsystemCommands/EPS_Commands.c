@@ -42,9 +42,17 @@ int CMD_RestoreDefaultThresholdVoltages(sat_packet_t *cmd)
 	return 0;
 }
 
-int CMD_GetSmoothingFactor(sat_packet_t *cmd)
+int CMD_UpdateSmoothingFactor(sat_packet_t* cmd)
 {
-	return 0;
+	int err = 0;
+	if (NULL == cmd)
+	{
+		return E_INPUT_POINTER_NULL;
+	}
+	float alpha;
+	memcpy((unsigned char*)&alpha, cmd->data, sizeof(alpha));
+	err = UpdateAlpha(alpha);
+	return err;
 }
 
 int CMD_EnterCruiseMode(sat_packet_t *cmd)
@@ -137,18 +145,27 @@ int CMD_SaveConfig(sat_packet_t *cmd)
 	return 0;
 }
 
-int CMD_SolarPanelWake(sat_packet_t *cmd)
+int CMD_SolarPanelWake(sat_packet_t* cmd)
 {
-	return 0;
+
+	IsisSolarPanelv2_State_t state = 0;
+	state = IsisSolarPanelv2_wakeup();
+	TransmitDataAsSPL_Packet(cmd, &state, sizeof(state));
+	return state;
 }
 
-int CMD_SolarPanelSleep(sat_packet_t *cmd)
+int CMD_SolarPanelSleep(sat_packet_t* cmd)
 {
-	return 0;
+	IsisSolarPanelv2_State_t state = 0;
+	state = IsisSolarPanelv2_sleep();
+	TransmitDataAsSPL_Packet(cmd, &state, sizeof(state));
+	return state;
 }
 
-int CMD_GetSolarPanelState(sat_packet_t *cmd)
+int CMD_GetSolarPanelState(sat_packet_t* cmd)
 {
-	return 0;
+	IsisSolarPanelv2_State_t state = 0;
+	state = IsisSolarPanelv2_getState();
+	TransmitDataAsSPL_Packet(cmd, &state, sizeof(state));
+	return state;
 }
-
