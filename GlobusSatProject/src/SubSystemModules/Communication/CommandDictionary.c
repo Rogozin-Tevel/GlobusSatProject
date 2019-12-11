@@ -6,7 +6,7 @@
 #include "SubSystemModules/Communication/SubsystemCommands/FS_Commands.h"
 #include "SubSystemModules/Communication/SubsystemCommands/EPS_Commands.h"
 
-#include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Housekeeping/TelemetryCollector.h"
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "TLM_management.h"
 #include <stdio.h>
