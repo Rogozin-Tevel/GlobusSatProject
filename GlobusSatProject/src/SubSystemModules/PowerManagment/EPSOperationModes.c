@@ -42,7 +42,7 @@ int EnterCriticalMode()
 
 int SetEPS_Channels(channel_t channel)
 {
-	return 0;
+	g_system_state = channel;
 }
 
 EpsState_t GetSystemState()
