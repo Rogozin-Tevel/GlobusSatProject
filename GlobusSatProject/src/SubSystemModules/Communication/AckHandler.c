@@ -19,7 +19,7 @@ int SendAckPacket(ack_subtype_t acksubtype, sat_packet_t *cmd,
 	}
 	packet.cmd_type = ack_type;
 	packet.cmd_subtype = acksubtype;
-	packet.data = data;
+	memcpy(packet.data, data, length);
 	packet.length = length;
 
 	return TransmitSplPacket(&packet, NULL);
