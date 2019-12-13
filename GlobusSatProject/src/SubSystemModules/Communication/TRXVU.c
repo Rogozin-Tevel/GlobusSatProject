@@ -19,7 +19,7 @@
 #include "TLM_management.h"
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
-#include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Housekeeping/TelemetryCollector.h"
 #ifdef TESTING_TRXVU_FRAME_LENGTH
 #include <hal/Utility/util.h>
 #endif

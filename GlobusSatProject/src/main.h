@@ -1,6 +1,8 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
+#include <hal/boolean.h>
+
 
 /*!
  * @brief checks if communication with the ground station was made in the last 'NO_COMMUNICATION_WDT_KICK_TIME' seconds
