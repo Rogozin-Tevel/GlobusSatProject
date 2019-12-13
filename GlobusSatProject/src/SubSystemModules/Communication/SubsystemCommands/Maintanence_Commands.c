@@ -54,12 +54,12 @@ int CMD_FRAM_Stop(sat_packet_t *cmd)
 
 int CMD_FRAM_GetDeviceID(sat_packet_t *cmd)
 {
-	return 0;
+	return 0//FRAM_getDeviceID();
 }
 
 int CMD_UpdateSatTime(sat_packet_t *cmd)
 {
-	return 0;
+	return 0//Time_setUnixEpoch();
 }
 
 int CMD_GetSatTime(sat_packet_t *cmd)
@@ -74,12 +74,22 @@ int CMD_GetSatUptime(sat_packet_t *cmd)
 
 int CMD_SoftTRXVU_ComponenetReset(sat_packet_t *cmd)
 {
-	return 0;
+	int err = 0;
+	err = IsisTrxvu_componentSoftReset(0x00)
+	if (err != 0)	// If error on first reset, stop and return error as to not overwrite the first one
+	{	return err	}
+	IsisTrxvu_componentSoftReset(0x01)
+	return err;
 }
 
 int CMD_HardTRXVU_ComponenetReset(sat_packet_t *cmd)
 {
-	return 0;
+	int err = 0;
+	err = IsisTrxvu_componentHardReset(0x00)
+	if (err != 0)	// If error on first reset, stop and return error as to not overwrite the first one
+	{	return err	}
+	IsisTrxvu_componentHardReset(0x01)
+	return err;
 }
 
 int CMD_AntennaDeploy(sat_packet_t *cmd)
