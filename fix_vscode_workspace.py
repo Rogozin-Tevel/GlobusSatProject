@@ -20,7 +20,8 @@ data = {
         ".gitignore": True,
         "*.py": True,
         "*.md": True
-    }
+    },
+    "editor.minimap.enabled": False
 }
 
 with open(".vscode/settings.json", "w") as write_file:
