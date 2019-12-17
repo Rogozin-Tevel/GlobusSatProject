@@ -1,4 +1,3 @@
-
 #ifndef SATCOMMANDS_H_
 #define SATCOMMANDS_H_
 
@@ -8,7 +7,8 @@
 #define MAX_NUM_OF_DELAYED_CMD (100)
 
 
-typedef enum __attribute__ ((__packed__)) CMD_ERR{
+typedef enum __attribute__ ((__packed__)) CMD_ERR
+{
 	command_succsess = 0,				///< a successful operation. no errors
 	command_found = 0,					///< a command was found
 	no_command_found ,					///< no commands were found in command buffers
