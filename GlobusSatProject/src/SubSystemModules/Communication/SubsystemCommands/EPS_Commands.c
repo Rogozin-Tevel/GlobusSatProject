@@ -54,7 +54,11 @@ int CMD_UpdateSmoothingFactor(sat_packet_t* cmd)
 	err = UpdateAlpha(alpha);
 	return err;
 }
+int CMD_GetSmoothingFactor(sat_packet_t* cmd)
+{
+	// Fetch alpha by sending float pointer to method, and sending data as SPL packet by the trnsmitdata_As_SPL method
 
+}
 int CMD_EnterCruiseMode(sat_packet_t *cmd)
 {
 	return 0;
