@@ -75,20 +75,20 @@ int CMD_GetSatUptime(sat_packet_t *cmd)
 int CMD_SoftTRXVU_ComponenetReset(sat_packet_t *cmd)
 {
 	int err = 0;
-	err = IsisTrxvu_componentSoftReset(0x00)
+	err = IsisTrxvu_componentSoftReset(,0x00)// TODO insert const sent in whatsapp group + change hex values to def names
 	if (err != 0)	// If error on first reset, stop and return error as to not overwrite the first one
 	{	return err	}
-	IsisTrxvu_componentSoftReset(0x01)
+	IsisTrxvu_componentSoftReset(0x01)// TODO insert const sent in whatsapp group + change hex values to def names
 	return err;
 }
 
 int CMD_HardTRXVU_ComponenetReset(sat_packet_t *cmd)
 {
 	int err = 0;
-	err = IsisTrxvu_componentHardReset(0x00)
+	err = IsisTrxvu_componentHardReset(0x00) // TODO insert const sent in whatsapp group + change hex values to def names
 	if (err != 0)	// If error on first reset, stop and return error as to not overwrite the first one
 	{	return err	}
-	IsisTrxvu_componentHardReset(0x01)
+	IsisTrxvu_componentHardReset(0x01) // TODO insert const sent in whatsapp group+ change hex values to def names
 	return err;
 }
 
