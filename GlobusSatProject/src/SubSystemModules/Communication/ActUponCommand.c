@@ -5,6 +5,7 @@
 #include "ActUponCommand.h"
 #include "CommandDictionary.h"
 #include "AckHandler.h"
+#include "SatCommandHandler.h"
 
 int ActUponCommand(sat_packet_t *cmd)  // Made By Blank
 {

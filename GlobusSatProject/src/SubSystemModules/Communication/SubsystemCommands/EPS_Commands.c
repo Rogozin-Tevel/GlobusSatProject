@@ -24,7 +24,7 @@ int CMD_UpdateThresholdVoltages(sat_packet_t *cmd)
 
 int CMD_GetThresholdVoltages(sat_packet_t *cmd)
 {
-	return 0;
+	return GetThresholdVoltages(/*voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES]*/);
 }
 
 int CMD_UpdateSmoothingFactor(sat_packet_t *cmd)

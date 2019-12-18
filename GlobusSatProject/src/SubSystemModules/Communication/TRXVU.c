@@ -19,7 +19,7 @@
 #include "TLM_management.h"
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/Maintenance/Maintenance.h"
-#include "SubSystemModules/Housekepping/TelemetryCollector.h"
+#include "SubSystemModules/Housekeeping/TelemetryCollector.h"
 #ifdef TESTING_TRXVU_FRAME_LENGTH
 #include <hal/Utility/util.h>
 #endif
@@ -34,77 +34,93 @@ time_unix 		g_beacon_interval_time = 0;			// seconds between each beacon
 unsigned char	g_current_beacon_period = 0;		// marks the current beacon cycle(how many were transmitted before change in baud)
 unsigned char 	g_beacon_change_baud_period = 0;	// every 'g_beacon_change_baud_period' beacon will be in 1200Bps and not 9600Bps
 
-xQueueHandle xDumpQueue = NULL;
+xQueueHandle     xDumpQueue = NULL;
 xSemaphoreHandle xDumpLock = NULL;
-xTaskHandle xDumpHandle = NULL;			 //task handle for dump task
+xTaskHandle      xDumpHandle = NULL;	 //task handle for dump task
 xSemaphoreHandle xIsTransmitting = NULL; // mutex on transmission.
 
 void InitSemaphores()
 {
 }
 
-int InitTrxvu() {
+int InitTrxvu() 
+{
+	int err = E_NO_SS_ERR;
 
+	/*
+	 * Inititalize the TRXVU
+	 */
+	{
+		ISIStrxvuI2CAddress address = 
+		{
+			I2C_TRXVU_RC_ADDR, I2C_TRXVU_TC_ADDR
+		};
 
-	    ISIStrxvuI2CAddress myTRXVUAddress;
-		ISIStrxvuFrameLengths myTRXVUBuffers;
+		ISIStrxvuFrameLengths maxFrameLengths = 
+		{
+			SIZE_TXFRAME, SIZE_RXFRAME
+		};
 
-		int retValInt = 0;
+		ISIStrxvuBitrate defaultBitrate = trxvu_bitrate_9600;
 
-		//Buffer definition
-		myTRXVUBuffers.maxAX25frameLengthTX = SIZE_TXFRAME; //SIZE_TXFRAME;
-		myTRXVUBuffers.maxAX25frameLengthRX = SIZE_RXFRAME;
-
-		//I2C addresses defined
-		myTRXVUAddress.addressVu_rc = I2C_TRXVU_RC_ADDR;
-		myTRXVUAddress.addressVu_tc = I2C_TRXVU_TC_ADDR;
-
-		//Bitrate definition
-		ISIStrxvuBitrate myTRXVUBitrates = trxvu_bitrate_9600;
-
-		retValInt = IsisTrxvu_initialize(&myTRXVUAddress, &myTRXVUBuffers,
-				&myTRXVUBitrates, 1);
-
-		if (retValInt != 0){
-			return retValInt;
+		err = IsisTrxvu_initialize(&address, &maxFrameLengths, &defaultBitrate, 1);
+		if (err != E_NO_SS_ERR)
+		{
+			return err;
 		}
 
-		//DELAY FOR DOING COMMANDS
-		vTaskDelay(100);
+		const portTickType ticksToDelay = 100; // # of ticks
+		vTaskDelay(ticksToDelay);
+	}
 
-		// antenna init
+	/*
+	 * Inititalize the antenna
+	 */
+	{
+		ISISantsI2Caddress address =
+		{
+			ANTS_I2C_SIDE_A_ADDR, ANTS_I2C_SIDE_B_ADDR
+		};
 
-		ISISantsI2Caddress myAntennaAddress;
-
-		myAntennaAddress.addressSideA = ANTS_I2C_SIDE_A_ADDR;
-		myAntennaAddress.addressSideB = ANTS_I2C_SIDE_B_ADDR;
-
-		//Initialize the AntS system
-		// ONE IS FOR TWO ANTS
-		retValInt = IsisAntS_initialize(&myAntennaAddress, 1);
-
-		if (retValInt != 0){
-			return retValInt;
-		}
-		vTaskDelay(100);
-
-		InitSemaphores();
-
-		if (0 != FRAM_read(&g_beacon_change_baud_period,
-		BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE)){
-			g_beacon_change_baud_period = DEFALUT_BEACON_BITRATE_CYCLE;
+		err = IsisAntS_initialize(&address, 1);
+		if (err != E_NO_SS_ERR)
+		{
+			return err;
 		}
 
-		if (0 != FRAM_read((unsigned char*) &g_beacon_interval_time,
-		BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE)){
-			g_beacon_interval_time = DEFAULT_BEACON_INTERVAL_TIME;
-		}
-		return E_NO_SS_ERR;
+		const portTickType ticksToDelay = 100; // # of ticks
+		vTaskDelay(ticksToDelay);
+	}
 
+	/*
+	 * Initialize the semaphores.
+	 * TODO: Document...?
+	 */
+	InitSemaphores();
+
+	/*
+	 * Load the beacon's bitrate cycle
+	 */
+	err = FRAM_read(&g_beacon_change_baud_period, BEACON_BITRATE_CYCLE_ADDR, BEACON_BITRATE_CYCLE_SIZE);
+	if (err)
+	{
+		g_beacon_change_baud_period = DEFALUT_BEACON_BITRATE_CYCLE;
+	}
+
+	/*
+	 * Load the beacon's interval time
+	 */
+	err = FRAM_read(&g_beacon_interval_time, BEACON_INTERVAL_TIME_ADDR, BEACON_INTERVAL_TIME_SIZE);
+	if (err)
+	{
+		g_beacon_interval_time = DEFAULT_BEACON_INTERVAL_TIME;
+	}
+
+	return E_NO_SS_ERR;
 }
 
-int TRX_Logic() {
-
+int TRX_Logic() 
+{
 	    int err = 0;
 		int frame_count = GetNumberOfFramesInBuffer();
 		sat_packet_t cmd = { 0 };

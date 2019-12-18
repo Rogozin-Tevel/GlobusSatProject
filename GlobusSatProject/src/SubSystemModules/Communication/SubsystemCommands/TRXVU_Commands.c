@@ -49,11 +49,11 @@ int CMD_SetBeaconInterval(sat_packet_t *cmd)
 }
 
 int CMD_SetBaudRate(sat_packet_t *cmd) {
-	return IsisTrxvu_tcSetAx25Bitrate(/*unsigned char index, ISIStrxvuBitrate bitrate*/);  // Where do i get these params from?
+	// return IsisTrxvu_tcSetAx25Bitrate(/*unsigned char index, ISIStrxvuBitrate bitrate*/);  // Where do i get these params from?
 }
 
 int CMD_GetTxUptime(sat_packet_t *cmd) {
-	return IsisTrxvu_tcGetUptime(/*unsigned char index, unsigned int *uptime*/);  // Where do i get these params from?
+	// return IsisTrxvu_tcGetUptime(/*unsigned char index, unsigned int *uptime*/);  // Where do i get these params from?
 }
 
 int CMD_GetRxUptime(sat_packet_t *cmd) {
