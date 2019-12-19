@@ -7,59 +7,117 @@
 	#include <satellite-subsystems/GomEPS.h>
 #endif
 
-
 #include <satellite-subsystems/IsisSolarPanelv2.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include  "SubSystemModules/Communication/TRXVU.h"
+#include "SubSystemModules/Communication/TRXVU.h"
 #include "SubSystemModules/PowerManagment/EPS.h"
 #include "SubSystemModules/PowerManagment/EPSOperationModes.h"
-#include "SubSystemModules/Communication/SatDataTx.h"
+// #include "SubSystemModules/Communication/SatDataTx.h" // ???
 #include "EPS_Commands.h"
 #include <hal/errors.h>
+
+// Shai (or someone else), check this pls?
 int CMD_UpdateThresholdVoltages(sat_packet_t *cmd)
-{
-	return 0;
+{ // Done by Maor
+	if (cmd == NULL)
+	{
+		return E_INPUT_POINTER_NULL;
+	}
+
+	voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES];
+	memcpy(thresh_volts, cmd->data, sizeof(thresh_volts));
+	return UpdateThresholdVoltages(thresh_volts);
 }
 
+// Shai (or someone else), check this pls?
 int CMD_GetThresholdVoltages(sat_packet_t *cmd)
-{
-	return GetThresholdVoltages(/*voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES]*/);
+{ // Done by Maor
+	if (cmd == NULL)
+	{
+		return E_INPUT_POINTER_NULL;
+	}
+
+	voltage_t thresh_volts[NUMBER_OF_THRESHOLD_VOLTAGES];
+	int err = GetThresholdVoltages(thresh_volts);
+	if (err)
+	{
+		return err;
+	}
+
+	err = TransmitDataAsSPL_Packet(cmd, thresh_volts, sizeof(thresh_volts));
+	return err;
 }
 
-int CMD_UpdateSmoothingFactor(sat_packet_t *cmd)
-{
-	return 0;
-}
-
+// Shai (or someone else), check this pls?
 int CMD_RestoreDefaultAlpha(sat_packet_t *cmd)
-{
-	return 0;
+{ // Done by Maor
+	if (cmd == NULL)
+	{
+		return E_INPUT_POINTER_NULL;
+	}
+
+	int err = RestoreDefaultAlpha();
+	if (err)
+	{
+		return err;
+	}
+
+	return CMD_GetSmoothingFactor(cmd); // perhaps?
 }
 
+// Shai (or someone else), check this pls?
 int CMD_RestoreDefaultThresholdVoltages(sat_packet_t *cmd)
-{
-	return 0;
+{ // Done by Maor
+	if (cmd == NULL)
+	{
+		return E_INPUT_POINTER_NULL;
+	}
+
+	int err = RestoreDefaultThresholdVoltages();
+	if (err)
+	{
+		return err;
+	}
+
+	return CMD_GetThresholdVoltages(cmd); // perhaps?
 }
 
 int CMD_UpdateSmoothingFactor(sat_packet_t* cmd)
 {
-	int err = 0;
 	if (NULL == cmd)
 	{
 		return E_INPUT_POINTER_NULL;
 	}
+
 	float alpha;
-	memcpy((unsigned char*)&alpha, cmd->data, sizeof(alpha));
-	err = UpdateAlpha(alpha);
+	memcpy(&alpha, cmd->data, sizeof(alpha));
+	return UpdateAlpha(alpha);
+}
+
+// Shai (or someone else), check this pls?
+int CMD_GetSmoothingFactor(sat_packet_t* cmd)
+{ // By Maor & Ido G
+	if (cmd == NULL)
+	{
+		return E_INPUT_POINTER_NULL;
+	}
+
+	// Fetch alpha by sending float pointer to method, and sending data as SPL packet by the trnsmitdata_As_SPL method
+	float alpha;
+	int err = GetAlpha(&alpha);
+	if (err)
+	{
+		return err;
+	}
+
+	err = TransmitDataAsSPL_Packet(cmd, &alpha, sizeof(float));
 	return err;
 }
-int CMD_GetSmoothingFactor(sat_packet_t* cmd)
-{
-	// Fetch alpha by sending float pointer to method, and sending data as SPL packet by the trnsmitdata_As_SPL method
 
-}
+// Why is the packet necessary?
+
 int CMD_EnterCruiseMode(sat_packet_t *cmd)
 {
 	return 0;
