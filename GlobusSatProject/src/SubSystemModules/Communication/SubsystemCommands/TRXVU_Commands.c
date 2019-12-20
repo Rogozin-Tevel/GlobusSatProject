@@ -81,7 +81,19 @@ int CMD_AntSetArmStatus(sat_packet_t *cmd) {
 }
 
 int CMD_AntGetArmStatus(sat_packet_t *cmd) {
-	return 0;
+	int index = 0; // Where do i get the index ?? 
+	ISISantsSide ant_side = cmd->data[0];
+	ISISantsStatus status = 0;
+
+	int err = IsisAntS_getStatusData(index, ant_side, &status);
+	if (err != 0)
+	{
+		return err;
+	}
+	
+	err = TransmitDataAsSPL_Packet(cmd, status, sizeof(ISISantsStatus))
+	
+	return err;
 }
 
 int CMD_AntGetUptime(sat_packet_t *cmd) {
