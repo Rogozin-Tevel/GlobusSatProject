@@ -49,18 +49,40 @@ int CMD_SetBeaconInterval(sat_packet_t *cmd)
 }
 
 int CMD_SetBaudRate(sat_packet_t *cmd) {
-	// return IsisTrxvu_tcSetAx25Bitrate(/*unsigned char index, ISIStrxvuBitrate bitrate*/);  // Where do i get these params from?
+	ISIStrxvuBitrate bitrate = 0;
+	int err = IsisTrxvu_tcSetAx25Bitrate(ISIS_TRXVU_I2C_BUS_INDEX, &bitrate);
+	if(err != 0)
+	{
+		return err;
+	}
+
+	return TransmitDataAsSPL_Packet(cmd, &bitrate, sizeof(ISIStrxvuBitrate))
 }
 
 int CMD_GetTxUptime(sat_packet_t *cmd) {
-	// return IsisTrxvu_tcGetUptime(/*unsigned char index, unsigned int *uptime*/);  // Where do i get these params from?
+	unsigned int uptime = 0;
+	int err = IsisTrxvu_tcGetUptime(ISIS_TRXVU_I2C_BUS_INDEX, &uptime);
+	if (err != 0)
+	{
+		return err;
+	}
+
+	return TransmitDataAsSPL_Packet(cmd, &uptime, sizeof(unsigned int))
 }
 
 int CMD_GetRxUptime(sat_packet_t *cmd) {
-	return 0;
+	unsigned int uptime = 0;
+	int err = IsisTrxvu_rcGetUptime(ISIS_TRXVU_I2C_BUS_INDEX, &uptime);
+	if (err != 0)
+	{
+		return err;
+	}
+
+	return TransmitDataAsSPL_Packet(cmd, &uptime, sizeof(unsigned int))
 }
 
 int CMD_GetNumOfDelayedCommands(sat_packet_t *cmd) {
+	
 	return 0;
 }
 
@@ -77,30 +99,37 @@ int CMD_DeleteAllDelyedBuffer(sat_packet_t *cmd) {
 }
 
 int CMD_AntSetArmStatus(sat_packet_t *cmd) {
+	ISISantsSide ant_side = cmd->data[0];
+	IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, ant_side, &status)
+
 	return 0;
 }
 
 int CMD_AntGetArmStatus(sat_packet_t *cmd) {
-	int index = 0; // Where do i get the index ?? 
 	ISISantsSide ant_side = cmd->data[0];
 	ISISantsStatus status = 0;
 
-	int err = IsisAntS_getStatusData(index, ant_side, &status);
+	int err = IsisAntS_getStatusData(ISIS_TRXVU_I2C_BUS_INDEX, ant_side, &status);
 	if (err != 0)
 	{
 		return err;
 	}
 	
-	err = TransmitDataAsSPL_Packet(cmd, status, sizeof(ISISantsStatus))
+	err = TransmitDataAsSPL_Packet(cmd, &status, sizeof(ISISantsStatus))
 	
 	return err;
 }
 
 int CMD_AntGetUptime(sat_packet_t *cmd) {
-	return 0;
+	unsigned int up_time = 0;
+	int err = IsisAntS_getUptime(ISIS_TRXVU_I2C_BUS_INDEX, cmd->data[0], &up_time);
+	if (err != 0) {
+		return err;
+	}
+	return TransmitDataAsSPL_Packet(cmd, &up_time, sizeof(int));
 }
 
 int CMD_AntCancelDeployment(sat_packet_t *cmd) {
-	return 0;
+	return IsisAntS_cancelDeployment(ISIS_TRXVU_I2C_BUS_INDEX, cmd->data[0]);
 }
 
