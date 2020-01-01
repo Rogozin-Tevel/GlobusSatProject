@@ -82,27 +82,30 @@ int CMD_GetRxUptime(sat_packet_t *cmd) {
 }
 
 int CMD_GetNumOfDelayedCommands(sat_packet_t *cmd) {
-	
-	return 0;
+	return GetDelayedCommandBufferCount();
 }
 
 int CMD_GetNumOfOnlineCommands(sat_packet_t *cmd) {
-	return 0;
+	unsigned short frameCount = 0;
+	int err = IsisTrxvu_rcGetFrameCount(ISIS_TRXVU_I2C_BUS_INDEX, &frameCount) 
+
+	if (err != 0)
+	{
+		return err;
+	}
+	return TransmitDataAsSPL_Packet(cmd, &frameCount, sizeof(frameCount));
 }
 
 int CMD_DeleteDelyedCmdByID(sat_packet_t *cmd) {
-	return 0;
+	return DeleteDelayedCommandByIndex(cmd->data[0]);
 }
 
 int CMD_DeleteAllDelyedBuffer(sat_packet_t *cmd) {
-	return 0;
+	return DeleteDelayedBuffer();
 }
 
 int CMD_AntSetArmStatus(sat_packet_t *cmd) {
-	ISISantsSide ant_side = cmd->data[0];
-	IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, ant_side, &status)
-
-	return 0;
+	return IsisAntS_setArmStatus(ISIS_TRXVU_I2C_BUS_INDEX, cmd->data[0], cmd->data[1]);
 }
 
 int CMD_AntGetArmStatus(sat_packet_t *cmd) {
@@ -115,9 +118,7 @@ int CMD_AntGetArmStatus(sat_packet_t *cmd) {
 		return err;
 	}
 	
-	err = TransmitDataAsSPL_Packet(cmd, &status, sizeof(ISISantsStatus))
-	
-	return err;
+	return TransmitDataAsSPL_Packet(cmd, &status, sizeof(ISISantsStatus));
 }
 
 int CMD_AntGetUptime(sat_packet_t *cmd) {

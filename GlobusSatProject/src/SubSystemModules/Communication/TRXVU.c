@@ -157,8 +157,7 @@ void FinishDump(dump_arguments_t *task_args,unsigned char *buffer, ack_subtype_t
 		unsigned char *err, unsigned int size) {
 }
 
-void AbortDump()
-{
+void AbortDump(){
 }
 
 void SendDumpAbortRequest() {

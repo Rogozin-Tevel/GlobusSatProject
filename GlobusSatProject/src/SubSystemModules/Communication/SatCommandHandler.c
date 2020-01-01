@@ -129,7 +129,9 @@ int AddDelayedCommand(sat_packet_t *cmd)
 
 int GetDelayedCommandBufferCount()
 {
-	return 0;
+	char* buffer = 0;
+	FRAM_read(buffer, DELAYED_CMD_FRAME_COUNT_ADDR, DELAYED_CMD_FRAME_COUNT_SIZE)
+	return FRAM_read(buffer, DELAYED_CMD_FRAME_COUNT_ADDR, DELAYED_CMD_FRAME_COUNT_SIZE);
 
 }
 

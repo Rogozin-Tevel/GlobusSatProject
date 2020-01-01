@@ -54,7 +54,11 @@ int CMD_FRAM_Stop(sat_packet_t *cmd)
 
 int CMD_FRAM_GetDeviceID(sat_packet_t *cmd)
 {
-	return 0//FRAM_getDeviceID();
+	char* deviceID = 0;
+	FRAM_getDeviceID(deviceID);
+
+	TransmitDataAsSPL_Packet(cmd, deviceID, sizeof(deviceID));
+	return TransmitDataAsSPL_Packet(cmd, deviceID, sizeof(deviceID));;
 }
 
 int CMD_UpdateSatTime(sat_packet_t *cmd)

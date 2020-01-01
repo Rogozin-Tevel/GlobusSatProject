@@ -260,7 +260,6 @@ int RestoreDefaultAlpha()
 int RestoreDefaultThresholdVoltages()
 {
 	voltage_t temp[NUMBER_OF_THRESHOLD_VOLTAGES] = DEFAULT_EPS_THRESHOLD_VOLTAGES;
-	FRAM_write(temp, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
-	return 0; // TODO: Handle error codes...
+	return FRAM_write(temp, EPS_THRESH_VOLTAGES_ADDR, EPS_THRESH_VOLTAGES_SIZE);
 }
 
