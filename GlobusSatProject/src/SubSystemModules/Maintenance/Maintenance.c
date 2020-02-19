@@ -20,9 +20,6 @@
 
 #define SECONDS_IN_1_DAY (60 * 60 * 24)
 
-// Maor 7.12.2019:
-// The error "handling" might be redundant, so I have removed it out meanwhile.
-
 Boolean CheckExecutionTime(time_unix prev_time, time_unix period)
 {
 	time_unix current_time;
@@ -114,11 +111,16 @@ int WakeupFromResetCMD()
 // TODO: Do this!
 void Maintenance()
 {
-	// SaveSatTimeInFRAM(/*unsigned int time_addr, unsigned int time_size*/);
+	time_unix current_time;
 
-	// WakeupFromResetCMD();  // Returns int
+	if(Time_getUnixEpoch(&current_time) == 0)
+	{
+		SaveSatTimeInFRAM(MOST_UPDATED_SAT_TIME_ADDR, &current_time);
+	}
 
-	// IsFS_Corrupted();  // Returns boolean
+	WakeupFromResetCMD();  // Returns int
 
-	// IsGroundCommunicationWDTKick();  // Returns boolean
+	IsFS_Corrupted();  // Returns boolean
+
+	IsGroundCommunicationWDTKick();  // Returns boolean
 }
