@@ -44,11 +44,13 @@ int CMD_FRAM_WriteAndTransmitt(sat_packet_t *cmd)
 
 int CMD_FRAM_Start(sat_packet_t *cmd)
 {
+	FRAM_start();
 	return 0;
 }
 
 int CMD_FRAM_Stop(sat_packet_t *cmd)
 {
+	FRAM_stop()
 	return 0;
 }
 
@@ -57,23 +59,42 @@ int CMD_FRAM_GetDeviceID(sat_packet_t *cmd)
 	char* deviceID = 0;
 	FRAM_getDeviceID(deviceID);
 
-	TransmitDataAsSPL_Packet(cmd, deviceID, sizeof(deviceID));
-	return TransmitDataAsSPL_Packet(cmd, deviceID, sizeof(deviceID));;
+	return TransmitDataAsSPL_Packet(cmd, deviceID, sizeof(deviceID));
 }
 
 int CMD_UpdateSatTime(sat_packet_t *cmd)
 {
-	return 0//Time_setUnixEpoch();
+	unsigned char* data = 0;
+	time_unix current_time;
+	Time_getUnixEpoch(&current_time);
+
+	memcpy(data,&current_time,sizeof(time_unix))
+
+	return FRAM_write(data, MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);;
 }
 
 int CMD_GetSatTime(sat_packet_t *cmd)
 {
-	return 0;
+	unsigned char* data = 0;
+
+	int err = FRAM_read(data,MOST_UPDATED_SAT_TIME_ADDR, MOST_UPDATED_SAT_TIME_SIZE);
+	if (err != 0)
+	{
+		return -1;
+	}
+
+	return TransmitDataAsSPL_Packet(cmd, data, sizeof(time_unix));
 }
 
 int CMD_GetSatUptime(sat_packet_t *cmd)
 {
-	return 0;
+	unsigned char* data = 0;
+
+	int uptime = Time_getUptimeSeconds();
+	
+	memcpy(data, &uptime, sizeof(int));
+
+	return TransmitDataAsSPL_Packet(cmd, data, sizeof(int));
 }
 
 int CMD_SoftTRXVU_ComponenetReset(sat_packet_t *cmd)

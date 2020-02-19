@@ -40,10 +40,8 @@ void SendErrorMSG(ack_subtype_t fail_subt, ack_subtype_t succ_subt,
 
 void SendErrorMSG_IfError(ack_subtype_t subtype, sat_packet_t *cmd, int err)
 {
-	if (err == 0)
+	if (err != 0)
 	{
-		return;
+		SendErrorMSG(subtype, subtype, cmd, err);
 	}
-
-	SendErrorMSG(subtype, subtype, cmd, err);
 }
