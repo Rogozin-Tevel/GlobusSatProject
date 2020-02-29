@@ -43,16 +43,7 @@ void SaveSatTimeInFRAM(unsigned int time_addr, unsigned int time_size)
 
 Boolean IsFS_Corrupted()
 {
-	/*
-		Attempt to read from a random place in the memory.
-		If you succeed, the file system is OK, otherwise it's corrupted.
-	*/
-
-	// We randomly chose to read a random property that's stored in the FRAM.
-	unsigned char dummy_buffer[RESET_CMD_FLAG_SIZE];
-
-	// Return TRUE if the read has failed (so it's corrupted), FALSE otherwise.
-	return FRAM_read(dummy_buffer, RESET_CMD_FLAG_ADDR, RESET_CMD_FLAG_SIZE);
+	return f_getfreespace(0, 0);
 }
 
 // TODO: Check this, seems pretty damn short
@@ -123,4 +114,6 @@ void Maintenance()
 	IsFS_Corrupted();  // Returns boolean
 
 	IsGroundCommunicationWDTKick();  // Returns boolean
+
+	CheckForMuteEnd();
 }
