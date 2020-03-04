@@ -1,0 +1,12 @@
+build.all.configs.enabled=false
+build.proj.ref.configs.enabled=false
+eclipse.preferences.version=1
+environment/workspace/LANG/delimiter=;
+environment/workspace/LANG/operation=replace
+environment/workspace/LANG/value=en_US
+environment/workspace/LC_ALL/delimiter=;
+environment/workspace/LC_ALL/operation=append
+environment/workspace/LC_ALL/value=en_US
+environment/workspace/append=true
+environment/workspace/appendContributed=true
+org.eclipse.cdt.core.showSourceRootsAtTopLevelOfProject=true

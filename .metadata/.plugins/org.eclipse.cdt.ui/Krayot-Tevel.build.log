@@ -1,0 +1,9 @@
+15:04:38 **** Incremental Build of configuration Debug for project Krayot-Tevel ****
+make all 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:/Users/TheBlankUnknown/Desktop/ISIS/application/eclipse/jre/bin/client;C:/Users/TheBlankUnknown/Desktop/ISIS/application/eclipse/jre/bin;C:/Users/TheBlankUnknown/Desktop/ISIS/application/eclipse/jre/lib/i386;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\ISIS\application\toolchain\bin;C:\ISIS\application\MinGW\msys\1.0\bin;C:\ISIS\application\MinGW\bin;C:\ISIS\application\sam-ba\drv;C:\Program Files\Python37\Scripts;C:\Program Files\Python37;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\dotnet\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;c:\putty;C:\Program Files\nodejs\;C:\opencv\build\x86\vc12\bin;C:\Program Files\Python37\Lib;C:\Program Files\Java\jdk-11.0.5;C:\Users\TheBlankUnknown\AppData\Local\Microsoft\WindowsApps;C:\Users\TheBlankUnknown\AppData\Local\GitHubDesktop\bin;C:\Users\TheBlankUnknown\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\TheBlankUnknown\Desktop\ISIS\application\eclipse;]
+
+15:04:38 Build Finished (took 94ms)
+

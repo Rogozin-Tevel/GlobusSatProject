@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="257" key="DIALOG_WIDTH"/>
+		<item value="116" key="DIALOG_Y_ORIGIN"/>
+		<item value="1103" key="DIALOG_X_ORIGIN"/>
+		<item value="381" key="DIALOG_HEIGHT"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="true" key="wrap"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
+		<item value="false" key="incremental"/>
+		<item value="false" key="wholeword"/>
+		<item value="" key="selection"/>
+		<list key="findhistory">
+			<item value="deploy"/>
+			<item value="addr"/>
+			<item value="SECONDS_SINCE_DEPLOY_ADDR"/>
+			<item value="fram"/>
+			<item value="SIZE_TXFRAME"/>
+			<item value="index_out_of_bound"/>
+			<item value="cmd_command_succsess"/>
+			<item value="cmd_execution_error"/>
+		</list>
+		<list key="replacehistory">
+			<item value="command_succsess"/>
+			<item value="execution_error"/>
+			<item value="command_success"/>
+			<item value="null_pointer_error"/>
+		</list>
+	</section>
+</section>
